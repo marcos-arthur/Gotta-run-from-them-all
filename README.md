@@ -1,4 +1,4 @@
-# Fatasmas
+# Gotta run from them all
 
 Repositório do jogo desenvolvido para a matéria de Inteligência Artificial para Jogos, ministrado pelo professor [Andre Maurício Campos](https://sigaa.ufrn.br/sigaa/public/docente/portal.jsf?siape=1363515) para o Bacharelado de Tecnologia da Informação na UFRN
 
