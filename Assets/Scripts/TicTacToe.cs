@@ -10,9 +10,13 @@ public class TicTacToe : MonoBehaviour
     private readonly string[,] board = new string[3,3];
     private string ai = "X";
     private string human = "O";
-    private int openSpots = 9;
     private string currentPlayer;
     private static readonly Random random = new();
+    private readonly Dictionary<string, int> scores = new Dictionary<string, int>(){
+        {"X", 1},
+        {"O", -1},
+        {"tie", 0}
+    };
 
     
     [SerializeField]
@@ -35,14 +39,25 @@ public class TicTacToe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (TMP_Text t in quads){
-            int x = int.Parse(t.name[0].ToString());
-            int y = int.Parse(t.name[1].ToString());
-            t.text = board[x,y];
-        }
+        // foreach (TMP_Text t in quads){
+        //     int x = int.Parse(t.name[0].ToString());
+        //     int y = int.Parse(t.name[1].ToString());
+        //     t.text = board[x,y];
+        // }
 
         string winner = CheckWinner();
         if(winner != ""){
+            /*
+            if(ai == winner) {
+                // ai wins
+                return "ai";
+            }else if(human == winner){
+                // human wins
+                return "human";
+            }else{
+                return "";
+            }
+            */
             Debug.Log(winner + " wins");
         }
     }
@@ -54,9 +69,9 @@ public class TicTacToe : MonoBehaviour
             int y = int.Parse(textComponent.name[1].ToString());
             if(textComponent.text == ""){
                 board[x,y] = human;
-                openSpots--;
+                quads[3*x+y].text = board[x,y];
                 currentPlayer = ai;
-                NextMove();
+                BestMove();
             }
         }
     }
@@ -90,18 +105,19 @@ public class TicTacToe : MonoBehaviour
             winner = board[0,2];
         }
 
+        int openSpots = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if(board[i,j] == ""){
+                    openSpots++;
+                }
+            }
+        }
+
         if(winner == "" && openSpots == 0){
             return "tie";
         }else{
-            if(ai == winner) {
-                // ai wins
-                return "ai";
-            }else if(human == winner){
-                // human wins
-                return "human";
-            }else{
-                return "";
-            }
+           return winner;
         }
     }
 
@@ -119,11 +135,13 @@ public class TicTacToe : MonoBehaviour
         }
         
         playerText.text = "Jogador: " + human;
-        if(currentPlayer == ai) NextMove();
+        if(currentPlayer == ai) BestMove();
     }
 
     void NextMove(){
         if(currentPlayer == ai) {
+
+            // Dumb
             List<(int, int)> avaiablePositions = new();
             for (int i = 0; i < 3; i++){
                 for (int j = 0; j < 3; j++){
@@ -134,9 +152,76 @@ public class TicTacToe : MonoBehaviour
             (int, int) move = avaiablePositions[r];
 
             board[move.Item1, move.Item2] = ai;
-            openSpots--;
 
             currentPlayer = human;
+        }
+    }
+
+    void BestMove(){
+        if(currentPlayer == ai) {
+
+            // Dumb
+            int bestScore = int.MinValue;
+            var move = (-1, -1);
+            for (int i = 0; i < 3; i++){
+                for (int j = 0; j < 3; j++){
+                    if(board[i,j] == "") {
+                        board[i,j] = ai;
+                        quads[3*i+j].text = board[i,j];
+                        int score = Minmax(board, 0, false);
+                        board[i,j] = "";
+                        quads[3*i+j].text = "";
+                        if(score > bestScore){
+                            bestScore = score;
+                            move = (i,j);
+                        }
+                    };
+                }
+            }
+
+            board[move.Item1, move.Item2] = ai;
+            quads[3*move.Item1+move.Item2].text = board[move.Item1,move.Item2];
+
+            currentPlayer = human;
+        }
+    }
+
+    int Minmax(string[,] board, int depth, bool isMaximizing){
+        string result = CheckWinner();
+        if(result != ""){
+            return scores[result];
+        }
+
+        if(isMaximizing){
+            int bestScore = int.MinValue;
+            for (int i = 0; i < 3; i++){
+                for (int j = 0; j < 3; j++){
+                    if(board[i,j] == ""){
+                        board[i,j] = ai;
+                        quads[3*i+j].text = board[i,j];
+                        int score = Minmax(board, depth++, false);
+                        board[i,j] = "";
+                        quads[3*i+j].text = "";
+                        bestScore = Math.Max(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
+        }else{
+            int bestScore = int.MaxValue;
+            for (int i = 0; i < 3; i++){
+                for (int j = 0; j < 3; j++){
+                    if(board[i,j] == ""){
+                        board[i,j] = human;
+                        quads[3*i+j].text = board[i,j];
+                        int score = Minmax(board, depth++, true);
+                        board[i,j] = "";
+                        quads[3*i+j].text = "";
+                        bestScore = Math.Min(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
         }
     }
 }
