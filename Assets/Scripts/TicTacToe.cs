@@ -10,7 +10,7 @@ public class TicTacToe : MonoBehaviour
     private readonly string[,] board = new string[3,3];
     private string ai = "X";
     private string human = "O";
-    private string currentPlayer;
+    private string currentPlayer = "X";
     private static readonly Random random = new();
     private readonly Dictionary<string, int> scores = new Dictionary<string, int>(){
         {"X", 1},
@@ -39,25 +39,8 @@ public class TicTacToe : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // foreach (TMP_Text t in quads){
-        //     int x = int.Parse(t.name[0].ToString());
-        //     int y = int.Parse(t.name[1].ToString());
-        //     t.text = board[x,y];
-        // }
-
         string winner = CheckWinner();
         if(winner != ""){
-            /*
-            if(ai == winner) {
-                // ai wins
-                return "ai";
-            }else if(human == winner){
-                // human wins
-                return "human";
-            }else{
-                return "";
-            }
-            */
             Debug.Log(winner + " wins");
         }
     }
@@ -85,24 +68,24 @@ public class TicTacToe : MonoBehaviour
 
         // Check for line in horizontal
         for (int i = 0; i < 3; i++){
-            if(Equals3(board[0,i], board[1,i], board[2,i])){
-                winner = board[0,i];
-            }
-        }
-
-        // Check for line in vertical
-        for (int i = 0; i < 3; i++){
             if(Equals3(board[i,0], board[i,1], board[i,2])){
                 winner = board[i,0];
             }
         }
 
+        // Check for line in vertical
+        for (int i = 0; i < 3; i++){
+            if(Equals3(board[0,i], board[1,i], board[2,i])){
+                winner = board[0,i];
+            }
+        }
+
         // Check for line in diagonals
         if(Equals3(board[0,0], board[1,1], board[2,2])){
-            winner = board[0,2];
+            winner = board[0,0];
         }
-        if(Equals3(board[0,2], board[1,1], board[2,0])){
-            winner = board[0,2];
+        if(Equals3(board[2,0], board[1,1], board[0,2])){
+            winner = board[2,0];
         }
 
         int openSpots = 0;
@@ -160,22 +143,19 @@ public class TicTacToe : MonoBehaviour
     void BestMove(){
         if(currentPlayer == ai) {
 
-            // Dumb
             int bestScore = int.MinValue;
             var move = (-1, -1);
             for (int i = 0; i < 3; i++){
                 for (int j = 0; j < 3; j++){
                     if(board[i,j] == "") {
                         board[i,j] = ai;
-                        quads[3*i+j].text = board[i,j];
                         int score = Minmax(board, 0, false);
                         board[i,j] = "";
-                        quads[3*i+j].text = "";
                         if(score > bestScore){
                             bestScore = score;
                             move = (i,j);
                         }
-                    };
+                    }
                 }
             }
 
@@ -198,10 +178,8 @@ public class TicTacToe : MonoBehaviour
                 for (int j = 0; j < 3; j++){
                     if(board[i,j] == ""){
                         board[i,j] = ai;
-                        quads[3*i+j].text = board[i,j];
                         int score = Minmax(board, depth++, false);
                         board[i,j] = "";
-                        quads[3*i+j].text = "";
                         bestScore = Math.Max(score, bestScore);
                     }
                 }
@@ -213,10 +191,8 @@ public class TicTacToe : MonoBehaviour
                 for (int j = 0; j < 3; j++){
                     if(board[i,j] == ""){
                         board[i,j] = human;
-                        quads[3*i+j].text = board[i,j];
                         int score = Minmax(board, depth++, true);
                         board[i,j] = "";
-                        quads[3*i+j].text = "";
                         bestScore = Math.Min(score, bestScore);
                     }
                 }
