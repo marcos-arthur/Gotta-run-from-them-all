@@ -6,12 +6,13 @@ using UnityEngine.Diagnostics;
 
 public class Grid<TGridObject>{
 
-
+    
     public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
     public class OnGridValueChangedEventArgs: EventArgs{
         public int x;
         public int y;
     }
+    private bool showDebug = false;
     private int width;
     private int height;
     private float cellSize;
@@ -32,7 +33,7 @@ public class Grid<TGridObject>{
             }
         }
         
-        bool showDebug = false;
+        
         if(showDebug){
             TextMesh[,] debugTextArray = new TextMesh[width,height];
             for(int x = 0; x < gridArray.GetLength(0); x++){
@@ -68,7 +69,7 @@ public class Grid<TGridObject>{
         return cellSize;
     }
 
-    private void GetXY(Vector3 worldPosition, out int x, out int y){
+    public void GetXY(Vector3 worldPosition, out int x, out int y){
         x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
         y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
     }

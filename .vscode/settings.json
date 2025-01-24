@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Gotta-run-from-them-all.sln"
+    "dotnet.defaultSolution": "Gotta run from them all.sln"
 }
