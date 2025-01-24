@@ -13,6 +13,8 @@ public class Testing : MonoBehaviour {
     [SerializeField] private HeatMapBoolVisual heatMapBoolVisual;
     [SerializeField] private HeatMapGenericVisual heatMapGenericVisual;
     [SerializeField] private PathfindingVisual pathfindingVisual;
+    [SerializeField] private EnemyController enemyController;
+    [SerializeField] private GameObject player;
     private Pathfinding pathfinding;
     private Grid<HeatMapGridObject> grid;
     // private float mouseMoveTimer;
@@ -30,6 +32,8 @@ public class Testing : MonoBehaviour {
     }
 
     private void Update() {
+        enemyController.SetTargetPosition(player.transform.position);
+
         // HandleClickToModifyGrid();
         // HandleHeatMapMouseMove();
 

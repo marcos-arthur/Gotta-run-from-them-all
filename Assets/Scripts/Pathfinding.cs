@@ -22,7 +22,7 @@ public class Pathfinding {
 
     public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition){
         grid.GetXY(startWorldPosition, out int startX, out int startY);
-        grid.GetXY(startWorldPosition, out int endX, out int endY);
+        grid.GetXY(endWorldPosition, out int endX, out int endY);
 
         List<PathNode> path = FindPath(startX, startY, endX, endY);
         if(path == null){

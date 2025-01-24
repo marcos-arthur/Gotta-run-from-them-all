@@ -17,6 +17,7 @@ public class TicTacToe : MonoBehaviour
         {"O", -1},
         {"tie", 0}
     };
+    private bool gameOver = false;
 
     
     [SerializeField]
@@ -41,12 +42,19 @@ public class TicTacToe : MonoBehaviour
     {
         string winner = CheckWinner();
         if(winner != ""){
-            Debug.Log(winner + " wins");
+            if(winner == ai){
+                playerText.text = "O ROBOÔ VENCEU!";
+            } else if (winner == human){
+                playerText.text = "O HUMANO VENCEU!";
+            } else{
+                playerText.text = "DEU EMPATE!";
+            }
+            gameOver = true;
         }
     }
 
     public void HandleClick(GameObject quad){
-        if(currentPlayer == human){
+        if(currentPlayer == human && !gameOver){
             TMP_Text textComponent = quad.transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
             int x = int.Parse(textComponent.name[0].ToString());
             int y = int.Parse(textComponent.name[1].ToString());
